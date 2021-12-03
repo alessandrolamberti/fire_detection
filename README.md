@@ -2,6 +2,8 @@
 
 Endpoint to detect and classify the presence of fire and smoke in a given image.
 
+![](assets/smoke.gif)
+
 ## Response
 ```
 {

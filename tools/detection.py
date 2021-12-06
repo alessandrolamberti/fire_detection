@@ -1,10 +1,27 @@
 import cv2 
 import numpy as np
 import time
-from yolo_detector import YoloDetector
 from config import *
+import torch
+from os import environ
 
-model = YoloDetector(MODEL_PATH)
+class YoloDetector():
+    def __init__(self, weights, device):
+        environ["CUDA_VISIBLE_DEVICES"] = "-1"
+        self.device = torch.device('cpu')
+        self.model = self._load_model(weights)
+
+    def _load_model(self, weights):
+        model = torch.hub.load("detection/yolov5", "custom", path=weights,
+                               source="local", force_reload=True)
+        model.to('cpu')
+        print("[INFO] Loaded YOLOv5 model")
+        return model
+    
+    def detect(self, image):
+        return self.model(image)
+
+model = YoloDetector(MODEL_PATH, DEVICE)
 
 def preprocess(image, size=(320, 320)):
     start = time.time()
@@ -21,14 +38,14 @@ def normalize_bbox(bbox, size):
     ymax = ymax / size[1]
     return xmin, ymin, xmax, ymax
 
-def run_detector(image, threshold, min_roi):
+def run_detector(image, threshold, min_area):
     start = time.time()
     results = model.detect(image)
     print("Detection time: {}".format(time.time() - start))
 
     boxes = []
     scores = []
-    labels = []
+    classes = []
 
     for detection in results.xyxy[0]:
         *bbox, confidence, label = detection
@@ -41,8 +58,8 @@ def run_detector(image, threshold, min_roi):
                    "xmax": float(bbox[2]), "ymax": float(bbox[3])}
             boxes.append(box)
             scores.append(float(confidence))
-            labels.append(ORGANIZATIONS[int(label)])
+            classes.append(ORGANIZATIONS[int(label)])
         
     print(f"Found {len(boxes)} objects")
     
-    return boxes, labels, scores
+    return boxes, classes, scores

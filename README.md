@@ -7,14 +7,23 @@ Endpoint to detect and classify the presence of fire and smoke in a given image.
 ## Response
 ```
 {
-  "success": bool,
+  "success": true,
   "detection": {
-    "classes": [str],
-    "scores": [float],
-    "boxes": {[float]
-    }
+    "pred_boxes": [
+      {
+        "xmin": 0.28542792797088623,
+        "ymin": 0.2093839943408966,
+        "xmax": 0.6914964318275452,
+        "ymax": 0.791353702545166
+      }
+    ],
+    "pred_classes": [
+      "fire"
+    ],
+    "pred_scores": [
+      0.938346266746521
+    ]
   }
-}
 ```
 
 ## License

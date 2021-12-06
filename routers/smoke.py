@@ -20,9 +20,10 @@ async def detect_smoke(request: Request, image: bytes = File(..., description="I
     data = {"success": False}
     if request.method == "POST":
         content_type = request._form['image'].content_type
-        if content_type not in ["image/jpeg", "image/png"]:
+        if content_type not in ALLOWED_FILE_EXTENSIONS:
+            data["message"] = "File must be one of {}".format(", ".join(ALLOWED_FILE_EXTENSIONS))
             raise HTTPException(
-                status_code=405, detail=data)
+                status_code=400, detail=data)
         
     resized_image = preprocess(image)
     boxes, classes, scores = run_detector(resized_image, threshold=detection_threshold, min_area=min_area)

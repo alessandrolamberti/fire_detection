@@ -26,7 +26,10 @@ model = YoloDetector(MODEL_PATH, DEVICE)
 def preprocess(image, size=(320, 320)):
     start = time.time()
     original_image = cv2.imdecode(np.frombuffer(image, np.uint8), cv2.IMREAD_COLOR)
-    resized_image = cv2.resize(original_image, size)
+    (h, w) = orginal_image.shape[:2]
+    r = width / float(w)
+    dim = (width, int(h * r))
+    resized_image = cv2.resize(orginal_image, dim)
     print("Preprocess time: {}".format(time.time() - start))
     return resized_image
 
@@ -58,7 +61,7 @@ def run_detector(image, threshold, min_area):
                    "xmax": float(bbox[2]), "ymax": float(bbox[3])}
             boxes.append(box)
             scores.append(float(confidence))
-            classes.append(ORGANIZATIONS[int(label)])
+            classes.append(LABELS[int(label)])
         
     print(f"Found {len(boxes)} objects")
     

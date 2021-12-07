@@ -18,7 +18,7 @@ Endpoint to detect and classify the presence of fire and smoke in a given image.
       }
     ],
     "pred_classes": [
-      "fire"
+      "smoke"
     ],
     "pred_scores": [
       0.938346266746521

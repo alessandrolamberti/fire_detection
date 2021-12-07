@@ -9,4 +9,5 @@ DETECTION_THRESHOLD = 0.5
 MIN_ROI = 600
 
 ALLOWED_FILE_EXTENSIONS = ['.jpg', '.jpeg', '.png']
+LABELS = ['smoke']
 

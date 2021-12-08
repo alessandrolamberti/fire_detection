@@ -25,7 +25,7 @@ async def detect_smoke(request: Request, image: bytes = File(..., description="I
             raise HTTPException(
                 status_code=400, detail=data)
         
-    resized_image = preprocess(image)
+    resized_image = preprocess(image, width=320)
     boxes, classes, scores = run_detector(resized_image, threshold=detection_threshold, min_area=min_area)
 
     detection = {

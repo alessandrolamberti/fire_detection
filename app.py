@@ -5,7 +5,7 @@ from starlette.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
 from routers import smoke
-from config import DEVICE
+from config import DEVICE, logger
 
 templates = Jinja2Templates(directory="templates")
 app = FastAPI()
@@ -14,13 +14,13 @@ app.include_router(smoke.router, prefix="/smoke", tags=["Smoke"])
 
 @app.on_event("startup")
 async def startup():
-    print("[INFO] Starting...")
-    print("[INFO] Machine Learning models will run on device:", DEVICE)
+    logger.info("Starting...")
+    logger.info("Machine Learning models will run on device: {}".format(DEVICE))
 
 
 @app.on_event("shutdown")
 async def shutdown():
-    print("[INFO] Shutting down...")
+    logger.info("Shutting down...")
 
 @app.get("/", response_class=HTMLResponse, include_in_schema=False)
 async def root(request: Request):

@@ -15,7 +15,7 @@ class YoloDetector():
         model = torch.hub.load("detection/yolov5", "custom", path=weights,
                                source="local", force_reload=True)
         model.to('cpu')
-        print("[INFO] Loaded YOLOv5 model")
+        logger.info("Loaded YOLOv5 model")
         return model
     
     def detect(self, image):
@@ -23,14 +23,14 @@ class YoloDetector():
 
 model = YoloDetector(MODEL_PATH, DEVICE)
 
-def preprocess(image, size=(320, 320)):
+def preprocess(image, width=320):
     start = time.time()
     original_image = cv2.imdecode(np.frombuffer(image, np.uint8), cv2.IMREAD_COLOR)
-    (h, w) = orginal_image.shape[:2]
+    (h, w) = original_image.shape[:2]
     r = width / float(w)
     dim = (width, int(h * r))
-    resized_image = cv2.resize(orginal_image, dim)
-    print("Preprocess time: {}".format(time.time() - start))
+    resized_image = cv2.resize(original_image, dim)
+    logger.info("Preprocess time: {}".format(time.time() - start))
     return resized_image
 
 def normalize_bbox(bbox, size):
@@ -44,7 +44,7 @@ def normalize_bbox(bbox, size):
 def run_detector(image, threshold, min_area):
     start = time.time()
     results = model.detect(image)
-    print("Detection time: {}".format(time.time() - start))
+    logger.info("Detection time: {}".format(time.time() - start))
 
     boxes = []
     scores = []
@@ -63,6 +63,6 @@ def run_detector(image, threshold, min_area):
             scores.append(float(confidence))
             classes.append(LABELS[int(label)])
         
-    print(f"Found {len(boxes)} objects")
+    logger.info(f"Found {len(boxes)} objects")
     
     return boxes, classes, scores
